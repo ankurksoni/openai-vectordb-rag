@@ -151,8 +151,6 @@ flowchart TD
     F --> G[Show Answer to User]
 ```
 
-![RAG Flowchart](https://github.com/ankurksoni/openai-vectordb-rag/flowchart.png)
-
 ## Why ChromaDB and pgvector?
 
 This project uses both ChromaDB and pgvector to demonstrate and compare two popular approaches to vector search:
