@@ -43,8 +43,27 @@ npm install
 
 ### 2. Start vector DBs (in another terminal)
 ```bash
-docker-compose up
+docker-compose up -d
 ```
+This will start the required databases (ChromaDB and Postgres with pgvector) in the background.
+
+#### About docker-compose.yml
+- The `docker-compose.yml` file defines and manages multi-container Docker applications.
+- In this project, it launches:
+  - **ChromaDB**: A vector database service, exposed on port 8000.
+  - **Postgres (with pgvector)**: A PostgreSQL database with the pgvector extension enabled, exposed on port 5432.
+- This setup ensures you have both vector search backends running locally, ready for the RAG scripts to connect and operate.
+
+#### How to Test if Servers Are Running
+You can use `telnet` to check if the database servers are up and listening:
+
+```bash
+telnet localhost 8000   # Test ChromaDB
+```
+```bash
+telnet localhost 5432   # Test Postgres/pgvector
+```
+If the connection opens (blank screen or connection message), the service is running. If it fails to connect, check your Docker containers.
 
 ### 3. Set up environment variables
 Create a `.env` file:

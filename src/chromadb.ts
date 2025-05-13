@@ -1,8 +1,19 @@
+/**
+ * This script demonstrates Retrieval-Augmented Generation (RAG) using ChromaDB and OpenAI.
+ *
+ * Flow:
+ * 1. Embeds example data and stores it in ChromaDB.
+ * 2. Prompts the user for a question.
+ * 3. Finds the most relevant info using vector search.
+ * 4. Uses OpenAI GPT to answer the question using the found context.
+ */
+
 import { ChromaClient, OpenAIEmbeddingFunction } from "chromadb";
 import OpenAI from "openai";
 const chroma = new ChromaClient({ path: "http://localhost:8000" });
 import readline from 'readline';
 
+// Example data to be embedded and stored
 const studentInfo = `Alexandra Thompson, a 19-year-old computer science sophomore with a 3.7 GPA,
 is a member of the programming and chess clubs who enjoys pizza, swimming, and hiking
 in her free time in hopes of working at a tech company after graduating from the University of Washington.`;
@@ -18,6 +29,7 @@ As the flagship institution of the six public universities in Washington state,
 UW encompasses over 500 buildings and 20 million square feet of space,
 including one of the largest library systems in the world.`;
 
+// Embedding function using OpenAI
 const embeddingFunction: OpenAIEmbeddingFunction = new OpenAIEmbeddingFunction({
     openai_api_key: process.env.OPENAI_API_KEY!,
     openai_model: 'text-embedding-3-small'
@@ -25,10 +37,16 @@ const embeddingFunction: OpenAIEmbeddingFunction = new OpenAIEmbeddingFunction({
 
 const collectionName = "personal-infos";
 
+/**
+ * Creates a new collection in ChromaDB if it doesn't exist.
+ */
 async function createCollection() {
     await chroma.createCollection({ name: collectionName });
 }
 
+/**
+ * Populates the ChromaDB collection with example documents and their embeddings.
+ */
 async function populateCollection() {
     const collection = await getCollection();
     await collection.add({
@@ -37,6 +55,9 @@ async function populateCollection() {
     })
 }
 
+/**
+ * Retrieves the ChromaDB collection, using the OpenAI embedding function.
+ */
 async function getCollection() {
     const collection = await chroma.getCollection({
         name: collectionName,
@@ -45,6 +66,10 @@ async function getCollection() {
     return collection;
 }
 
+/**
+ * Prompts the user for a question, retrieves the most relevant info from ChromaDB,
+ * and uses OpenAI GPT to answer the question using that context.
+ */
 async function askQuestion() {
     const rl = readline.createInterface({
         input: process.stdin,
@@ -71,7 +96,7 @@ async function askQuestion() {
             model: 'gpt-3.5-turbo',
             temperature: 0,
             messages: [{
-                role: 'assistant', 
+                role: 'assistant',
                 content: `Answer the next question using this information: ${relevantInfo}`
             },
             {
@@ -86,14 +111,21 @@ async function askQuestion() {
     }
 }
 
+/**
+ * Prepares the dataset by creating the collection and populating it.
+ */
 async function prepareDataSet() {
     await createCollection();
     await populateCollection();
 }
 
+/**
+ * Main entry point: prepares the dataset and starts the Q&A loop.
+ */
 async function ask() {
     await askQuestion();
 }
 
+// Run the steps
 prepareDataSet();
 ask();
