@@ -143,8 +143,8 @@ A vector database stores these embeddings and lets you quickly find the most sim
 
 ```mermaid
 flowchart TD
-    A[User Question] --> B[Embed Question (OpenAI)]
-    B --> C[Vector Search (ChromaDB/pgvector)]
+    A[User Question] --> B[Embed Question OpenAI]
+    B --> C[Vector Search ChromaDB/pgvector]
     C --> D[Retrieve Relevant Context]
     D --> E[Send Context + Question to GPT]
     E --> F[AI Generates Answer]
