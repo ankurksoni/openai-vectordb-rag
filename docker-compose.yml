@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  chroma-db:
+    image: chromadb/chroma:latest
+    container_name: chroma-db
+    ports:
+      - "8000:8000"
+    # volumes:
+    #   - chroma_data:/chroma/.chroma/index
+    environment:
+      - IS_PERSISTENT=TRUE
+  postgres:
+    image: ankane/pgvector
+    container_name: pg-sql
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    # volumes:
+    #   - pg_data:/var/lib/postgresql/data
+
+# volumes:
+#   chroma_data:
